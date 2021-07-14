@@ -55,6 +55,7 @@ namespace Plugin1.DataAccess
                 member.PopulateLines(lines);
             }
 
+            //Add Member object to Memberset object
             foreach (var set in setsOfMembers)
             {
                 set.PopulateMembers(members);
