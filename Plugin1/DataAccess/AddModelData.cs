@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -20,12 +21,9 @@ namespace Plugin1.DataAccess
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static List<MemberSet> GetModel(string folderPath)
+        public static (List<Member>, List<MemberSet>) GetModel(string folderPath)
         {
-            List<MemberSet> setsOfMembers = new List<MemberSet>();
-            Dictionary<int, Node> Nodes = new Dictionary<int, Node>();
-            List<Point3d> rPoints = new List<Point3d>();
-
+            
             //Populate nodes
             var nodes = GetNodes(folderPath);
             //populate lines
@@ -33,7 +31,7 @@ namespace Plugin1.DataAccess
             //populate members
             var members = GetMembers(folderPath);
             //populate sets of members
-            setsOfMembers = GetSetsOfMembers(folderPath);
+            var setsOfMembers = GetSetsOfMembers(folderPath);
             //Populate profiles 
             var profiles = GetProfiles(folderPath);
 
@@ -48,7 +46,6 @@ namespace Plugin1.DataAccess
             {
                 node.Magnify();
                 node.Flip();
-                rPoints.Add(node.GetRhinoPoint());
             }
             
             //Add Node objec to line object
@@ -61,6 +58,7 @@ namespace Plugin1.DataAccess
             foreach (var member in members)
             {
                 member.PopulateLines(lines);
+                member.SetProfile(profiles);
             }
 
             //Add Member object to Memberset object
@@ -68,9 +66,9 @@ namespace Plugin1.DataAccess
             {
                 set.PopulateMembers(members);
             }
-            
 
-            return setsOfMembers;
+            (List<Member>, List<MemberSet>) Model = (members, setsOfMembers);
+            return Model;
         }
         public static List<Node> GetNodes(string folderPath)
         {

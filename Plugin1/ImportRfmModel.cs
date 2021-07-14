@@ -29,7 +29,7 @@ namespace Plugin1
         {
             string folderPath = @"Z:\DARBS\2021\PROJEKTI\ARA_2021_L06_BK0_PAMATI_angars_MUIZAS_3_K_BEDRITIS_JF\3_KONSTRUKCIJAS\3_Teklas modeli\GH_FAILI\References\2021.07.21_Ramis_3D_KOPNU_SHEMA\";
             
-            var model = GetModel(folderPath);
+            (var mymembers, var setsOfMembers) = GetModel(folderPath);
             #region Test1
             //Populate nodes
             var nodes = GetNodes(folderPath);
