@@ -10,7 +10,6 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Plugin1.Clases;
 using Rhino.Geometry;
-using MemberMap = Plugin1.Clases.MemberMap;
 
 namespace Plugin1.DataAccess
 {
@@ -65,6 +64,7 @@ namespace Plugin1.DataAccess
             foreach (var set in setsOfMembers)
             {
                 set.PopulateMembers(members);
+                set.SetLines();
             }
 
             (List<Member>, List<MemberSet>) Model = (members, setsOfMembers);
@@ -144,12 +144,15 @@ namespace Plugin1.DataAccess
                 Mode = CsvMode.NoEscape
             };
             string filepath = folderPath + "1.21 Sets of Members.csv";
-            using (var streamReader = new StreamReader(filepath))
+            if (File.Exists(filepath))
             {
-                using (var csvReader = new CsvReader(streamReader, config))
+                using (var streamReader = new StreamReader(filepath))
                 {
-                    csvReader.Context.RegisterClassMap<Plugin1.Clases.MemberSetMap>();
-                    setsOfMembers = csvReader.GetRecords<MemberSet>().ToList();
+                    using (var csvReader = new CsvReader(streamReader, config))
+                    {
+                        csvReader.Context.RegisterClassMap<Plugin1.Clases.MemberSetMap>();
+                        setsOfMembers = csvReader.GetRecords<MemberSet>().ToList();
+                    }
                 }
             }
             return setsOfMembers;

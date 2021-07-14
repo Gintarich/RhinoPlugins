@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rhino.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,10 +19,20 @@ namespace Plugin1.Clases
             Number = number;
             MemberList = members;
         }
+        // Public properties
         public int Number { get; set; }
         public string MemberList { get; set; }
         public List<Member> Members { get; set; }
+        // Private properties
+        private Line _line;
 
+
+        // Setters/Getters
+        public Line Line
+        {
+            get { return _line; }
+        }
+        // Methods
         public void PopulateMembers(List<Member> members)
         {
             var membernames = MemberList.Split(',').ToList();
@@ -61,6 +72,23 @@ namespace Plugin1.Clases
                 Members.Add(currentmember);
                 members.Remove(currentmember);
             }
+        }
+
+        public void SetLines()
+        {
+            List<Point3d> rpoint = new List<Point3d>();
+            
+            foreach (var member in Members)
+            {
+                var pt1 = member.Line.StartPoint.GetRhinoPoint();
+                var pt2 = member.Line.EndPoint.GetRhinoPoint();
+                rpoint.Add(pt1);
+                rpoint.Add(pt2);
+            }
+            var pointArray = Point3d.SortAndCullPointList(rpoint, 20);
+            Line line = new Line{ StartPoint = new Node{x= pointArray[0].X, y=pointArray[0].Y, z=pointArray[0].Z }, 
+                EndPoint = new Node() { x = pointArray.Last().X, y = pointArray.Last().Y, z = pointArray.Last().Z } };
+            _line = line;
         }
     }
 }

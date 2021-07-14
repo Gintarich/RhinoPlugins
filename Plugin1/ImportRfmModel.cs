@@ -6,6 +6,7 @@ using Rhino.Input.Custom;
 using System;
 using System.Collections.Generic;
 using Plugin1.Clases;
+using RLine = Rhino.Geometry.Line;
 using static Plugin1.DataAccess.AddModelData;
 
 namespace Plugin1
@@ -30,43 +31,38 @@ namespace Plugin1
             string folderPath = @"Z:\DARBS\2021\PROJEKTI\ARA_2021_L06_BK0_PAMATI_angars_MUIZAS_3_K_BEDRITIS_JF\3_KONSTRUKCIJAS\3_Teklas modeli\GH_FAILI\References\2021.07.21_Ramis_3D_KOPNU_SHEMA\";
             
             (var mymembers, var setsOfMembers) = GetModel(folderPath);
-            #region Test1
-            //Populate nodes
-            var nodes = GetNodes(folderPath);
-            //populate lines
-            var lines = GetLines(folderPath);
-            //populate members
-            var members = GetMembers(folderPath);
-            //populate sets of members
-
-            //Convert model from meters to milimeters, flip it and get rhino Points out of it
-            foreach (Node node in nodes)
+            
+            List<Clases.Line> lines = new List<Clases.Line>();
+            foreach (var member in mymembers)
             {
-                node.Magnify();
-                node.Flip();
+                //Start point of member line
+                var start = member.Line.StartPoint.GetRhinoPoint();
+                //End point of member line
+                var end = member.Line.EndPoint.GetRhinoPoint();
+                //Rhino Line
+                RLine line = new RLine { From = start ,To = end };
+                
+                var uId = doc.Objects.AddLine(member.Line.StartPoint.GetRhinoPoint(), member.Line.EndPoint.GetRhinoPoint());
+                var obj = doc.Objects.FindId(uId);
+                obj.Attributes.SetUserString("Profile", member.Profile.ProfileName);
+                obj.Attributes.SetUserString("Name", member.Comment);
+                
+            }
+            foreach (var setOfMember in setsOfMembers)
+            {
+                //Start point of member line
+                var start = setOfMember.Line.StartPoint.GetRhinoPoint();
+                //End point of member line
+                var end = setOfMember.Line.EndPoint.GetRhinoPoint();
+                //Rhino Line
+                RLine line = new RLine { From = start,To = end };
+                var uId = doc.Objects.AddLine(setOfMember.Line.StartPoint.GetRhinoPoint(), setOfMember.Line.EndPoint.GetRhinoPoint());
+                var obj = doc.Objects.FindId(uId);
+                obj.Attributes.SetUserString("Profile", setOfMember.Members[0].Profile.ProfileName);
+                obj.Attributes.SetUserString("Name", setOfMember.Members[0].Comment);
             }
 
-            //Add Node objec to line object
-            foreach (var line in lines)
-            {
-                line.PopulateNodes(nodes);
-            }
-
-            //Add Line object to Member object
-            foreach (var member in members)
-            {
-                member.PopulateLines(lines);
-            }
-            foreach (var line in lines)
-            {
-                doc.Objects.AddLine(line.StartPoint.GetRhinoPoint(), line.EndPoint.GetRhinoPoint());
-            }
-            #endregion
-
-
-
-
-
+           
             doc.Views.Redraw();
             // TODO: start here modifying the behaviour of your command.
             // ---

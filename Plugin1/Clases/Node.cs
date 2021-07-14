@@ -14,9 +14,8 @@ namespace Plugin1.Clases
         {
 
         }
-        public Node(int number, double x_in, double y_in, double z_in)
+        public Node(double x_in, double y_in, double z_in)
         {
-            Number = number;
             x = x_in;
             y = y_in;
             z = z_in;
