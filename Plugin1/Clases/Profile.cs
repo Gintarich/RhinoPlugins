@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Plugin1.Clases
 {
-    class Profile
+    public class Profile
     {
         //Ctor
         public Profile()
@@ -23,31 +23,30 @@ namespace Plugin1.Clases
         public string ProfileName
         {
             get { return _profileName; }
-            set 
-            { 
-                var profilestringparts = ProfileDescription.Split(' ').ToList();
-               
-                if (profilestringparts[1].Contains('x'))
-                {
-                    profilestringparts[1]= profilestringparts[1].Replace('x', '*');
-                }
-                
-                if (profilestringparts[0]=="QRO")
-                {
-                    _profileName = "SHS" + profilestringparts[1];
-                }
-                else if (profilestringparts[0] == "RRO")
-                {
-                    _profileName = "RHS" + profilestringparts[1];
-                }
-                else
-                {
-                    _profileName = profilestringparts[0] + profilestringparts[1];
-                }
-            }
         }
         //Methods
+        public void SetValue()
+        {
+            var profilestringparts = ProfileDescription.Split(' ').ToList();
 
+            if (profilestringparts[1].Contains('x'))
+            {
+                profilestringparts[1] = profilestringparts[1].Replace('x', '*');
+            }
+
+            if (profilestringparts[0] == "QRO")
+            {
+                _profileName = "SHS" + profilestringparts[1];
+            }
+            else if (profilestringparts[0] == "RRO")
+            {
+                _profileName = "RHS" + profilestringparts[1];
+            }
+            else
+            {
+                _profileName = profilestringparts[0] + profilestringparts[1];
+            }
+        }
 
     }
 }

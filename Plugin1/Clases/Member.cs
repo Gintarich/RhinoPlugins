@@ -24,6 +24,14 @@ namespace Plugin1.Clases
         public Line Line { get; set; }
         public string Comment { get; set; }
         public int LineNr { get; set; }
+        private Profile _profile;
+
+        public Profile Profile
+        {
+            get { return _profile; }
+            set { _profile = value; }
+        }
+
 
         public void PopulateLines(List<Line> lines)
         {

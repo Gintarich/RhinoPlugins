@@ -34,6 +34,14 @@ namespace Plugin1.DataAccess
             var members = GetMembers(folderPath);
             //populate sets of members
             setsOfMembers = GetSetsOfMembers(folderPath);
+            //Populate profiles 
+            var profiles = GetProfiles(folderPath);
+
+            //Set Profile Values
+            foreach (var profile in profiles)
+            {
+                profile.SetValue();
+            }
 
             //Convert model from meters to milimeters, flip it and get rhino Points out of it
             foreach (Node node in nodes)
@@ -147,6 +155,28 @@ namespace Plugin1.DataAccess
                 }
             }
             return setsOfMembers;
+        }
+        public static List<Profile> GetProfiles(string folderPath)
+        {
+            List<Profile> profiles = new List<Profile>();
+
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ";",
+                HasHeaderRecord = false,
+                Mode = CsvMode.NoEscape
+            };
+            string filepath = folderPath + "1.13 Cross-Sections .csv";
+            using (var streamReader = new StreamReader(filepath))
+            {
+                using (var csvReader = new CsvReader(streamReader, config))
+                {
+                    csvReader.Context.RegisterClassMap<Plugin1.Clases.ProfileMap>();
+                    profiles = csvReader.GetRecords<Profile>().ToList();
+                }
+            }
+
+            return profiles;
         }
     }
 }
