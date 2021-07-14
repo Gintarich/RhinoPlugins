@@ -26,11 +26,17 @@ namespace Plugin1.Clases
             set 
             { 
                 var profilestringparts = ProfileDescription.Split(' ').ToList();
+               
+                if (profilestringparts[1].Contains('x'))
+                {
+                    profilestringparts[1]= profilestringparts[1].Replace('x', '*');
+                }
+                
                 if (profilestringparts[0]=="QRO")
                 {
                     _profileName = "SHS" + profilestringparts[1];
                 }
-                if (profilestringparts[0] == "RRO")
+                else if (profilestringparts[0] == "RRO")
                 {
                     _profileName = "RHS" + profilestringparts[1];
                 }
