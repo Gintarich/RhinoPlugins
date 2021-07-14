@@ -9,11 +9,13 @@ using Plugin1.Clases;
 using RLine = Rhino.Geometry.Line;
 using static Plugin1.DataAccess.AddModelData;
 using static Plugin1.HelperMethods.RhinoHelperMethods;
+using System.Drawing;
 
 namespace Plugin1
 {
     public class ImportRfmModel : Command
     {
+        public Random rnd = new Random();
         public ImportRfmModel()
         {
             // Rhino only creates one instance of each command class defined in a
@@ -29,6 +31,7 @@ namespace Plugin1
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
+            Random rnd = new Random();
             string folderPath = @"Z:\DARBS\2021\PROJEKTI\ARA_2021_L06_BK0_PAMATI_angars_MUIZAS_3_K_BEDRITIS_JF\3_KONSTRUKCIJAS\3_Teklas modeli\GH_FAILI\References\2021.07.21_Ramis_3D_KOPNU_SHEMA\";
             
             (var mymembers, var setsOfMembers) = GetModel(folderPath);
@@ -48,7 +51,9 @@ namespace Plugin1
                 var obj = doc.Objects.FindId(uId);
                 obj.Attributes.SetUserString("Profile", member.Profile.ProfileName);
                 obj.Attributes.SetUserString("Name", member.Comment);
-                
+                Color randomColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                obj.Attributes.LayerIndex = GetLayerIndex(doc, member.Comment, randomColor);
+                obj.CommitChanges();
             }
             foreach (var setOfMember in setsOfMembers)
             {
@@ -63,6 +68,9 @@ namespace Plugin1
                 var obj = doc.Objects.FindId(uId);
                 obj.Attributes.SetUserString("Profile", setOfMember.Members[0].Profile.ProfileName);
                 obj.Attributes.SetUserString("Name", setOfMember.Members[0].Comment);
+                Color randomColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                obj.Attributes.LayerIndex = GetLayerIndex(doc, setOfMember.Members[0].Comment, randomColor);
+                obj.CommitChanges();
             }
 
            
