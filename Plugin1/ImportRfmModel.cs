@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Plugin1.Clases;
 using RLine = Rhino.Geometry.Line;
 using static Plugin1.DataAccess.AddModelData;
+using static Plugin1.HelperMethods.RhinoHelperMethods;
 
 namespace Plugin1
 {
@@ -35,13 +36,14 @@ namespace Plugin1
             List<Clases.Line> lines = new List<Clases.Line>();
             foreach (var member in mymembers)
             {
+
                 //Start point of member line
                 var start = member.Line.StartPoint.GetRhinoPoint();
                 //End point of member line
                 var end = member.Line.EndPoint.GetRhinoPoint();
                 //Rhino Line
                 RLine line = new RLine { From = start ,To = end };
-                
+                //Add attributes
                 var uId = doc.Objects.AddLine(member.Line.StartPoint.GetRhinoPoint(), member.Line.EndPoint.GetRhinoPoint());
                 var obj = doc.Objects.FindId(uId);
                 obj.Attributes.SetUserString("Profile", member.Profile.ProfileName);
@@ -56,6 +58,7 @@ namespace Plugin1
                 var end = setOfMember.Line.EndPoint.GetRhinoPoint();
                 //Rhino Line
                 RLine line = new RLine { From = start,To = end };
+                //Add attributes
                 var uId = doc.Objects.AddLine(setOfMember.Line.StartPoint.GetRhinoPoint(), setOfMember.Line.EndPoint.GetRhinoPoint());
                 var obj = doc.Objects.FindId(uId);
                 obj.Attributes.SetUserString("Profile", setOfMember.Members[0].Profile.ProfileName);
